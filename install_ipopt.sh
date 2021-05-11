@@ -81,5 +81,3 @@ ln -s "$main_dir/coinhsl/.libs/libcoinhsl.so" "$main_dir/coinhsl/.libs/libhsl.so
 echo "# Added by intall_ipopt.sh" >> $HOME/.bashrc
 echo "export LD_LIBRARY_PATH=\"$LD_LIBRARY_PATH:$main_dir/coinhsl/.libs"\" >> $HOME/.bashrc
 
-
-
