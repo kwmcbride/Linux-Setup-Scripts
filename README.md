@@ -10,7 +10,7 @@ This is the first script to run right after installing. For me the most importan
 
 Installing IPOPT is really a pain. Seriously. This script handles everything for you and at least works on Linux Mint 20.1. For a proper IPOPT experience, you should get the HSL libraries as well.
 
-##install_k_aug.sh
+## install_k_aug.sh
 
 COMING SOON !
 
