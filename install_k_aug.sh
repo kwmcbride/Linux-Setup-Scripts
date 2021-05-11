@@ -6,6 +6,13 @@
 main_dir="$HOME/scratch"
 sub_dir="k_aug_install"
 
+# This is where you installed ASL
+asl_install_dir="$HOME/scratch"
+# This is where you installed HSL
+hsl_install_dir="$HOME/scratch"
+# This is where most libraries are found (don't change unless your set-up is different)
+usr_dir="/usr/lib"
+
 # The Github repo where k_aug is hosted
 repo="https://github.com/dthierry/k_aug.git"
 
@@ -13,18 +20,53 @@ repo="https://github.com/dthierry/k_aug.git"
 #sudo apt-get update
 sudo apt-get install cmake
 
-# This is where your asl.h and getstub.h files are located (line 93)
-asl_dir="$HOME/scratch/test_ipopt/ThirdParty-ASL/solvers"
-# This may be necessary for other files (for example arith.h is here)
-extra_dir="$HOME/scratch/test_ipopt/ThirdParty-ASL"
+# Manual dependency directory entry - not necessary unless the auto install doesn't work
+# This is where your (1) asl.h, (2) getstub.h, and (3) arith.h files are located
+dir_dep_1="" 
+dir_dep_2="" 
+dir_dep_3="" 
 
-# Here are the directories for the various dependencies - change these to your settings!
-dir_libcoinasl="$HOME/scratch/test_ipopt/ThirdParty-ASL/.lib"
-dir_libcoinhsl=""
-dir_libmetis="/usr/lib/x86_64-linux-gnu"
-dir_blas="/usr/lib/x86_64-linux-gnu/blas"
-dir_lapack="/usr/lib/x86_64-linux-gnu/lapack"
-dir_gfortran="/usr/lib/gcc/x86_64-linux-gnu/9"
+# Library packages
+dir_asl=""
+dir_hsl=""
+dir_metis=""
+dir_blas=""
+dir_lapack=""
+dir_gfortran=""
+
+# Automatic dependency lookup - finds the directory of the latest version of the file
+search_dir=$asl_install_dir
+if ! [[ ${dir_dep_1} ]];
+  then dir_dep_1="$(find $search_dir -name asl.h -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+if ! [[ ${dir_dep_2} ]];
+  then dir_dep_2="$(find $search_dir -name getstub.h -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+if ! [[ ${dir_dep_3} ]];
+  then dir_dep_3="$(find $search_dir -name arith.h -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+if ! [[ ${dir_asl} ]];
+  then dir_asl="$(find $search_dir -name libcoinasl.so -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+
+search_dir=$hsl_install_dir
+if ! [[ ${dir_hsl} ]];
+  then dir_hsl="$(find $search_dir -name libcoinhsl.so -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+
+search_dir=$usr_dir
+if ! [[ ${dir_metis} ]];
+  then dir_metis="$(find $search_dir -name libmetis.so -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+if ! [[ ${dir_blas} ]];
+  then dir_blas="$(find $search_dir -name libblas.so -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+if ! [[ ${dir_lapack} ]];
+  then dir_lapack="$(find $search_dir -name liblapack.so -printf '%h\n' | sort -d -r | head -n 1)"
+fi
+if ! [[ ${dir_gfortran} ]];
+  then dir_gfortran="$(find $search_dir -name libgfortran.so -printf '%h\n' | sort -d -r | head -n 1)"
+fi
 
 # Make the scratch folder in the home directory
 if ! [[ -d "$main_dir" ]]
@@ -51,70 +93,33 @@ cd k_aug
 # Incase you mess up
 cp CMakeLists.txt CMakeLists-original.txt
 
-# This section adds all the directories entered at the top of the file
-
 # Change the ASL dependencies
-if [ -z "$asl_dir" ]
-then
-  echo "\$asl_dir is empty and defaults /usr/local/include/coin-or/asl is being used"
-else
-  echo "$asl_dir is being used for the ASL libraries"
-  sed -i "s:include_directories(/usr/local/include/coin-or/asl ):include_directories(${asl_dir} ${extra_dir} ):g" CMakeLists.txt
-fi
-
+echo "DEP: $dir_dep_1, $dir_dep_2, and $dir_dep_3 are being used for the ASL dependencies"
+sed -i "s:include_directories(/usr/local/include/coin-or/asl ):include_directories(${dir_dep_1} ${dir_dep_2} ${dir_dep_3} ):g" CMakeLists.txt
+  
 # ASL
-if [ -z "$dir_libcoinasl" ]
-then
-  echo "\$dir_libcoinasl is empty and default is being used"
-else
-  echo "$dir_libcoinasl is being used"
-  sed -i "s:find_library(COINASL NAMES asl \${libaslname} HINTS /usr/local/lib REQUIRED):find_library(COINASL NAMES asl \${libaslname} HINTS /usr/local/lib $dir_libcoinasl REQUIRED):g" CMakeLists.txt
-fi
+echo "ASL: $dir_asl is being used for the ASL library"
+sed -i "s:find_library(COINASL NAMES asl \${libaslname} HINTS /usr/local/lib REQUIRED):find_library(COINASL NAMES asl \${libaslname} HINTS /usr/local/lib $dir_asl REQUIRED):g" CMakeLists.txt
 
 # HSL
-if [ -z "$dir_libcoinhsl" ]
-then
-  echo "\$dir_libcoinhsl is empty and default is being used"
-else
-  echo "$dir_libcoinhsl is being used"
-  sed -i "s:find_library(COINHSL NAMES \${libhslname} HINTS /usr/local/lib REQUIRED):find_library(COINHSL NAMES ${libhslname} HINTS /usr/local/lib $dir_libcoinhsl REQUIRED):g" CMakeLists.txt
-fi
+echo "HSL: $dir_hsl is being used for the HSL library"
+sed -i "s:find_library(COINHSL NAMES \${libhslname} HINTS /usr/local/lib REQUIRED):find_library(COINHSL NAMES \${libhslname} HINTS /usr/local/lib $dir_hsl REQUIRED):g" CMakeLists.txt
 
 # metis
-if [ -z "$dir_libmetis" ]
-then
-  echo "\$dir_libmetis is empty and defaults /usr/local/lib is being used"
-else
-  echo "$dir_libmetis is being used for the ASL libraries"
-  sed -i "s:find_library(COINMETIS NAMES metis \${libmetisname} HINTS /usr/local/lib REQUIRED):find_library(COINMETIS NAMES metis \${libmetisname} HINTS /usr/local/lib $dir_libmetis REQUIRED):g" CMakeLists.txt
-fi
+echo "METIS: $dir_metis is being used for the Metis library"
+sed -i "s:find_library(COINMETIS NAMES metis \${libmetisname} HINTS /usr/local/lib REQUIRED):find_library(COINMETIS NAMES metis \${libmetisname} HINTS /usr/local/lib $dir_metis REQUIRED):g" CMakeLists.txt
 
 # blas
-if [ -z "$dir_blas" ]
-then
-  echo "\$dir_blas is empty and default is being used"
-else
-  echo "$dir_blas is being used"
-  sed -i "s:find_library(BLAS NAMES blas \${libblasname} HINTS /usr/lib /usr/local/lib REQUIRED):find_library(BLAS NAMES blas \${libblasname} HINTS /usr/lib /usr/local/lib $dir_blas REQUIRED):g" CMakeLists.txt
-fi
+echo "BLAS: $dir_blas is being used for the BLAS library"
+sed -i "s:find_library(BLAS NAMES blas \${libblasname} HINTS /usr/lib /usr/local/lib REQUIRED):find_library(BLAS NAMES blas \${libblasname} HINTS /usr/lib /usr/local/lib $dir_blas REQUIRED):g" CMakeLists.txt
 
 # lapack
-if [ -z "$dir_lapack" ]
-then
-  echo "\$dir_lapack is empty and default is being used"
-else
-  echo "$dir_lapack is being used"
-  sed -i "s:find_library(LAPACK NAMES lapack \${liblapackname} HINTS /usr/lib /usr/local/lib REQUIRED):find_library(LAPACK NAMES lapack \${liblapackname} HINTS /usr/lib /usr/local/lib $dir_lapack REQUIRED):g" CMakeLists.txt
-fi
+echo "LAPACK: $dir_lapack is being used for the LAPACK library"
+sed -i "s:find_library(LAPACK NAMES lapack \${liblapackname} HINTS /usr/lib /usr/local/lib REQUIRED):find_library(LAPACK NAMES lapack \${liblapackname} HINTS /usr/lib /usr/local/lib $dir_lapack REQUIRED):g" CMakeLists.txt
 
-# lapack
-if [ -z "$dir_gfortran" ]
-then
-  echo "$dir_gfortran is empty and default is being used"
-else
-  echo "$dir_gfortran is being used"
-  sed -i "s:find_library(GFORTRAN NAMES gfortran HINTS /usr/local/opt/gcc/lib/gcc/10 REQUIRED):find_library(GFORTRAN NAMES gfortran HINTS $dir_gfortran REQUIRED):g" CMakeLists.txt
-fi
+# gfortran
+echo "GFORTRAN: $dir_gfortran is being used for the GFortran library"
+sed -i "s:find_library(GFORTRAN NAMES gfortran HINTS /usr/local/opt/gcc/lib/gcc/10 REQUIRED):find_library(GFORTRAN NAMES gfortran HINTS $dir_gfortran REQUIRED):g" CMakeLists.txt
 
 # Make it all!
 cmake CMakeLists.txt
