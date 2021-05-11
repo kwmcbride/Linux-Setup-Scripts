@@ -77,3 +77,10 @@ sudo make install
 sudo bash -c "echo 'deb http://gb.archive.ubuntu.com/ubuntu bionic main universe' >> /etc/apt/sources.list"
 sudo apt-get install libgfortran3
 
+# Add libhsl.so to PATH - it is unfortunate that this is the way...
+ln -s "$main_dir/coinhsl/.libs/libcoinhsl.so" "$main_dir/coinhsl/.libs/libhsl.so"
+echo "# Added by intall_ipopt.sh" >> $HOME/.bashrc
+echo "export LD_LIBRARY_PATH=\"$LD_LIBRARY_PATH:$main_dir/coinhsl/.libs"\" >> $HOME/.bashrc
+
+
+
