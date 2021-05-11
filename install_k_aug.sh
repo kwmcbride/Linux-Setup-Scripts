@@ -1,4 +1,4 @@
-# Script to install k_aug and add to PAth in .bashrc
+# Script to install k_aug and add to PATH in .bashrc
 # This script worked in Linux Mint 20.1
 # Kernel 5.4.0-58-generic
 
