@@ -14,4 +14,6 @@ Installing IPOPT is really a pain. Seriously. This script handles everything for
 
 This is probably less fun to install than IPOPT. Since they use several of the same libraries, you should already have IPOPT installed. This takes care of k_aug installation automatically, but I can't guarantee that it will work on your system (Linux).
 
-To use this, you need to have the dependencies already installed and you need to locate the locations of the shared objects. Once you enter these into the script, it should work. It does for me.
+To use this, you need to have the dependencies already installed. The latest version of this script will find the location of the key shared objects automatically by finding the latest version of the file in the expected folders. You should update the directories at the top of the folder with your specific installation locations (ASL, HSL).
+
+It should work. It does for me.
