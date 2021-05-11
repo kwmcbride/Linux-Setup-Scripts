@@ -40,7 +40,6 @@ sudo make install
 # Install BLAS and LAPACK - not needed if installed above
 #./configure --with-lapack="-L$HOME/lib -lf77blas -lcblas -latlas"
 
-# HSL libraries - either get a different version of gfortran or wait for a link
 # This assumes you have a folder 'coinhsl' in main_dir
 if [[ -d "$main_dir/coinhsl" ]]
 then
