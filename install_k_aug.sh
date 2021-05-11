@@ -38,38 +38,28 @@ dir_lapack=""
 dir_gfortran=""
 
 # Automatic dependency lookup - finds the directory of the latest version of the file
+function find_dir()
+{
+    local  __resultvar=$1
+    if ! [[ ${!__resultvar} ]]; then
+        eval $__resultvar="$(find $2 -name $3 -printf '%h\n' | sort -d -r | head -n 1)"
+    fi
+}
+
 search_dir=$asl_install_dir
-if ! [[ ${dir_dep_1} ]];
-  then dir_dep_1="$(find $search_dir -name asl.h -printf '%h\n' | sort -d -r | head -n 1)"
-fi
-if ! [[ ${dir_dep_2} ]];
-  then dir_dep_2="$(find $search_dir -name getstub.h -printf '%h\n' | sort -d -r | head -n 1)"
-fi
-if ! [[ ${dir_dep_3} ]];
-  then dir_dep_3="$(find $search_dir -name arith.h -printf '%h\n' | sort -d -r | head -n 1)"
-fi
-if ! [[ ${dir_asl} ]];
-  then dir_asl="$(find $search_dir -name libcoinasl.so -printf '%h\n' | sort -d -r | head -n 1)"
-fi
+find_dir dir_dep_1 $search_dir "asl.h"
+find_dir dir_dep_2 $search_dir "getstub.h"
+find_dir dir_dep_3 $search_dir "arith.h"
+find_dir dir_asl $search_dir "libcoinasl.so"
 
 search_dir=$hsl_install_dir
-if ! [[ ${dir_hsl} ]];
-  then dir_hsl="$(find $search_dir -name libcoinhsl.so -printf '%h\n' | sort -d -r | head -n 1)"
-fi
+find_dir dir_hsl $search_dir "libcoinhsl.so"
 
 search_dir=$usr_dir
-if ! [[ ${dir_metis} ]];
-  then dir_metis="$(find $search_dir -name libmetis.so -printf '%h\n' | sort -d -r | head -n 1)"
-fi
-if ! [[ ${dir_blas} ]];
-  then dir_blas="$(find $search_dir -name libblas.so -printf '%h\n' | sort -d -r | head -n 1)"
-fi
-if ! [[ ${dir_lapack} ]];
-  then dir_lapack="$(find $search_dir -name liblapack.so -printf '%h\n' | sort -d -r | head -n 1)"
-fi
-if ! [[ ${dir_gfortran} ]];
-  then dir_gfortran="$(find $search_dir -name libgfortran.so -printf '%h\n' | sort -d -r | head -n 1)"
-fi
+find_dir dir_metis $search_dir "libmetis.so"
+find_dir dir_blas $search_dir "libblas.so"
+find_dir dir_lapack $search_dir "liblapack.so"
+find_dir dir_gfortran $search_dir "libgfortran.so"
 
 # Make the scratch folder in the home directory
 if ! [[ -d "$main_dir" ]]
