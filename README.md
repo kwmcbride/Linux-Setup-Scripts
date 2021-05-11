@@ -1,20 +1,16 @@
-Linux Setup Scripts
-===================
+# Linux Setup Scripts
 
 These are some scripts I use to set up a new installation of Ubuntu based distributions. It is a hassle to make all of the necessary installations each time you install a new distro, so this helps ease the process.
 
-1. setup_OS.sh
---------------
+## setup_OS.sh
 
 This is the first script to run right after installing. For me the most important steps are getting python installed along with pyenv and poetry. Other critical programs are included here as well. This list may change frequently as I find more things that should be added to it.
 
-2. install_ipopt.sh
--------------------
+## install_ipopt.sh
 
 Installing IPOPT is really a pain. Seriously. This script handles everything for you and at least works on Linux Mint 20.1. For a proper IPOPT experience, you should get the HSL libraries as well.
 
-3. install_k_aug.sh
--------------------
+##install_k_aug.sh
 
 COMING SOON !
 
