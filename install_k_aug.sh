@@ -13,6 +13,9 @@ hsl_install_dir="$HOME/scratch"
 # This is where most libraries are found (don't change unless your set-up is different)
 usr_dir="/usr/lib"
 
+#Option to print stuff out (0 or 1)
+verbose=0
+
 # The Github repo where k_aug is hosted
 repo="https://github.com/dthierry/k_aug.git"
 
@@ -120,6 +123,9 @@ sed -i "s:find_library(LAPACK NAMES lapack \${liblapackname} HINTS /usr/lib /usr
 # gfortran
 echo "GFORTRAN: $dir_gfortran is being used for the GFortran library"
 sed -i "s:find_library(GFORTRAN NAMES gfortran HINTS /usr/local/opt/gcc/lib/gcc/10 REQUIRED):find_library(GFORTRAN NAMES gfortran HINTS $dir_gfortran REQUIRED):g" CMakeLists.txt
+
+# verbosity update
+sed -i "s:set(PRINT_VERBOSE 0):set(PRINT_VERBOSE $verbose):g" CMakeLists.txt
 
 # Make it all!
 cmake CMakeLists.txt
