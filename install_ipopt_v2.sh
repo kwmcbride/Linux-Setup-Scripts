@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This is a script to automatically install Ipopt on a linux machine.
+# Written by Kevin McBride
+
 default_install_dir="scratch/ipopt"
 # This function installs the required dependencies for Ipopt
 function install_dependencies()
@@ -20,15 +23,12 @@ function coinhsl_directory()
     else
       tar_dir="$HOME/$_coin_tar_dir"
     fi
-  
-  	echo $tar_dir
+    
 	#The zipped tarball should be in the main directory (where it should be for installation)
     coin_dir="coinhsl"
     FILE=$(find $tar_dir -name "coinhsl-*.tar.gz")
 	# Just to make sure
 	is_tar=$(file $FILE | grep -q 'gzip compressed data' && echo 1 || echo 0)
-
-	echo $FILE
 
     if [ $is_tar == 1 ];
 		then
@@ -148,8 +148,6 @@ function install_ipopt()
 		  echo "$package shared objects not found: installing now..."
 		  
 		  coinhsl_directory
-		  echo "moved stuff"
-		  echo $main_dir
 		  # Install HSL libraries
 		  if [[ -d "$main_dir/coinhsl" ]]
 			then
