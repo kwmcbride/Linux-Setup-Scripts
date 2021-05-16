@@ -42,7 +42,7 @@ function find_dir()
     if ! [[ ${!__resultvar} ]]; then
         eval $__resultvar="$(find $2 -name $3 | sort -d -r | head -n 1 | xargs dirname)"
     else
-		echo "not working"
+	echo "not working"
     fi
 }
 
