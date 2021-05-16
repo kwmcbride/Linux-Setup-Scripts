@@ -1,4 +1,4 @@
-# Linux Setup Scripts
+# Linux Setup Scripts (mostly)
 
 These are some scripts I use to set up a new installation of Ubuntu based distributions. It is a hassle to make all of the necessary installations each time you install a new distro, so this helps ease the process.
 
@@ -17,3 +17,7 @@ This is probably less fun to install than IPOPT. Since they use several of the s
 To use this, you need to have the dependencies already installed. The latest version of this script will find the location of the key shared objects automatically by finding the latest version of the file in the expected folders. You should update the directories at the top of the folder with your specific installation locations (ASL, HSL).
 
 It should work. It does for me.
+
+## install_k_aug_mac_os.sh
+
+The same as above but modified to work on Mac OS (only tested on Big Sur).
