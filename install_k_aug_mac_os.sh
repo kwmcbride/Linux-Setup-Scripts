@@ -1,6 +1,5 @@
 # Script to install k_aug and add to PATH in .bashrc
-# This script worked in Linux Mint 20.1
-# Kernel 5.4.0-58-generic
+# This script worked using MacOS Big Sur with the M1 chip
 
 # Variables - directories where you want to install k_aug
 main_dir="$HOME/scratch"
